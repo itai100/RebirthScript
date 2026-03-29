@@ -1,181 +1,128 @@
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local PlayerSection = MainTab:CreateSection("Player / Fun")
 
-local Window = Rayfield:CreateWindow({
-   Name = "Rebirth Mania Script 🎁",
-   LoadingTitle = "Itay Hub",
-   LoadingSubtitle = "by Itay",
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Big Hub"
-   },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink",
-      RememberJoins = true
-   },
-   KeySystem = true,
-   KeySettings = {
-      Title = "Rebirth Mania | key 🔑 ",
-      Subtitle = "Key System",
-      Note = "No method of obtaining the key is provided",
-      FileName = "Key",
-      SaveKey = true,
-      GrabKeyFromSite = true,
-      Key = {"https://pastebin.com/raw/WXng6d0M"}
-   }
+local player = game.Players.LocalPlayer
+
+-- 🪶 FLY
+MainTab:CreateButton({
+   Name = "Fly",
+   Callback = function()
+       local char = player.Character or player.CharacterAdded:Wait()
+       local hrp = char:WaitForChild("HumanoidRootPart")
+
+       local bv = Instance.new("BodyVelocity")
+       bv.Velocity = Vector3.new(0,0,0)
+       bv.MaxForce = Vector3.new(9e9,9e9,9e9)
+       bv.Parent = hrp
+
+       local bg = Instance.new("BodyGyro")
+       bg.MaxTorque = Vector3.new(9e9,9e9,9e9)
+       bg.CFrame = hrp.CFrame
+       bg.Parent = hrp
+
+       game:GetService("RunService").RenderStepped:Connect(function()
+           bv.Velocity = workspace.CurrentCamera.CFrame.LookVector * 60
+           bg.CFrame = workspace.CurrentCamera.CFrame
+       end)
+   end,
 })
 
-local MainTab = Window:CreateTab("🎁Home", nil)
-local MainSection = MainTab:CreateSection("Teleport")    
+-- ❌ STOP FLY
+MainTab:CreateButton({
+   Name = "Stop Fly",
+   Callback = function()
+       local char = player.Character
+       if char then
+           local hrp = char:FindFirstChild("HumanoidRootPart")
+           if hrp then
+               for _,v in pairs(hrp:GetChildren()) do
+                   if v:IsA("BodyVelocity") or v:IsA("BodyGyro") then
+                       v:Destroy()
+                   end
+               end
+           end
+       end
+   end,
+})
 
-Rayfield:Notify({
-   Title = "You executed the script",
-   Content = "GL",
-   Duration = 5,
-   Image = nil,
-   Actions = {
-      Ignore = {
-         Name = "Okay!",
-         Callback = function()
-            print("The user tapped Okay!")
-         end
-      },
-   },
-})    
+-- 🦘 SUPER JUMP
+MainTab:CreateButton({
+   Name = "Super Jump",
+   Callback = function()
+       local hum = player.Character:WaitForChild("Humanoid")
+       hum.JumpPower = 120
+   end,
+})
 
--- 🌍 TELEPORTS
+-- 🔁 RESET JUMP
+MainTab:CreateButton({
+   Name = "Normal Jump",
+   Callback = function()
+       local hum = player.Character:WaitForChild("Humanoid")
+       hum.JumpPower = 50
+   end,
+})
+
+-- ⚡ SPEED
+MainTab:CreateButton({
+   Name = "Speed 100",
+   Callback = function()
+       local hum = player.Character:WaitForChild("Humanoid")
+       hum.WalkSpeed = 100
+   end,
+})
+
+-- 🐢 NORMAL SPEED
+MainTab:CreateButton({
+   Name = "Normal Speed",
+   Callback = function()
+       local hum = player.Character:WaitForChild("Humanoid")
+       hum.WalkSpeed = 16
+   end,
+})
+
+-- ♾️ INFINITE JUMP
+local infJump = false
 
 MainTab:CreateButton({
-   Name = "Teleport VIP",
+   Name = "Toggle Infinite Jump",
    Callback = function()
-       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(125.7, 63.8, 6467.7)
+       infJump = not infJump
    end,
 })
+
+game:GetService("UserInputService").JumpRequest:Connect(function()
+   if infJump then
+       local hum = player.Character:FindFirstChildOfClass("Humanoid")
+       if hum then
+           hum:ChangeState("Jumping")
+       end
+   end
+end)
+
+-- 👻 NOCLIP
+local noclip = false
 
 MainTab:CreateButton({
-   Name = "Teleport Spawn",
+   Name = "Toggle Noclip",
    Callback = function()
-       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(90, 39, 6038.4)
+       noclip = not noclip
    end,
 })
 
+game:GetService("RunService").Stepped:Connect(function()
+   if noclip then
+       for _,v in pairs(player.Character:GetDescendants()) do
+           if v:IsA("BasePart") then
+               v.CanCollide = false
+           end
+       end
+   end
+end)
+
+-- 💀 RESET CHARACTER
 MainTab:CreateButton({
-   Name = "Teleport Forest",
+   Name = "Reset Character",
    Callback = function()
-       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(736.3, -26, 4696)
-   end,
-})
-
-MainTab:CreateButton({
-   Name = "Teleport Candy",
-   Callback = function()
-       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(793.1, 29.8, 5098.8)
-   end,
-})
-
-MainTab:CreateButton({
-   Name = "Teleport Beach",
-   Callback = function()
-       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(774.4, 30.5, 5396)
-   end,
-})
-
-MainTab:CreateButton({
-   Name = "Teleport Volcanic",
-   Callback = function()
-       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(766.2, 30, 5708)
-   end,
-})
-
-MainTab:CreateButton({
-   Name = "Teleport Darkness",
-   Callback = function()
-       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(785, 30, 5975)
-   end,
-})
-
-MainTab:CreateButton({
-   Name = "Teleport Lucid",
-   Callback = function()
-       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(751, 93, 6258)
-   end,
-})
-
-MainTab:CreateButton({
-   Name = "Teleport Hacker",
-   Callback = function()
-       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(769, 30, 6738)
-   end,
-})
-
-MainTab:CreateButton({
-   Name = "Teleport Void",
-   Callback = function()
-       game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(763, 30, 7020)
-   end,
-})
-
--- 🧪 POTIONS TAB (תיקון + הוספה)
-local PotionTab = Window:CreateTab("🧪Potion", nil)
-local PotionSection = PotionTab:CreateSection("Potions")
-
-PotionTab:CreateButton({
-   Name = "INF 5X SECRET",
-   Callback = function()
-       game:GetService("ReplicatedStorage")
-       :WaitForChild("PotionEvent")
-       :WaitForChild("GodPotion")
-       :FireServer(1000000000000001900)
-   end,
-})
-
-PotionTab:CreateButton({
-   Name = "INF 3X TAPS",
-   Callback = function()
-       game:GetService("ReplicatedStorage")
-       :WaitForChild("PotionEvent")
-       :WaitForChild("TapPotion")
-       :FireServer(99999996451)
-   end,
-})
-
-PotionTab:CreateButton({
-   Name = "INF 3X GEMS",
-   Callback = function()
-       game:GetService("ReplicatedStorage")
-       :WaitForChild("PotionEvent")
-       :WaitForChild("GemsPotion")
-       :FireServer(99999999999999680)
-   end,
-})
-
-PotionTab:CreateButton({
-   Name = "INF 2X LUCK",
-   Callback = function()
-       game:GetService("ReplicatedStorage")
-       :WaitForChild("PotionEvent")
-       :WaitForChild("LuckPotion")
-       :FireServer(99999999999999995187)
-   end,
-})
-
-PotionTab:CreateButton({
-   Name = "INF 3X LUCK",
-   Callback = function()
-       game:GetService("ReplicatedStorage")
-       :WaitForChild("PotionEvent")
-       :WaitForChild("LuckPotion2")
-       :FireServer(99999999999999995113)
-   end,
-})
-
-PotionTab:CreateButton({
-   Name = "INF 4X LUCK",
-   Callback = function()
-       game:GetService("ReplicatedStorage")
-       :WaitForChild("PotionEvent")
-       :WaitForChild("LuckPotion3")
-       :FireServer(1000000000871)
+       player.Character:BreakJoints()
    end,
 })
